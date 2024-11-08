@@ -51,8 +51,9 @@ mummerplot -p SA922_Tif -f SA922_Tif.best.delta -t postscript
 ps2pdf SA922_Tif.ps SA922_Tif.pdf
 
 #####################LR_Gapcloser ONT gap fill
-ontreads=N02.filt.fa
-scaffold=genome_20.fasta
-LR_Gapcloser-master/src/LR_Gapcloser.sh -i $scaffold \
+cd /mnt/NFS/analysis-results/genome_assembly/SA922/LR_Gapcloser使用ONT补第三轮的gap
+ontreads=/mnt/NFS/Genome/SA922/ONT/BMK_DATA_20200805093254_4/N02.filt.fa
+scaffold=/mnt/NFS/analysis-results/genome_assembly/SA922/第三轮/genome_20.fasta
+/mnt/NFS/software/LR_Gapcloser-master/src/LR_Gapcloser.sh -i $scaffold \
  -l $ontreads -s n -t 60 -m 1000000 -v 10000
 
