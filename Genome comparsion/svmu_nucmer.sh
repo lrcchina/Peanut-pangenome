@@ -4,11 +4,12 @@ genome=$1
 refgenome=$2
 for i in {01..20}
 do
+#comparision between chromosomes using nucmer
 echo "nucmer -t 40 ../../${refgenome}/chr${i}.fasta ../$genome/chr${i}.fasta --prefix chr$i"
 done > nucmer.sh
 ParaFly -c nucmer.sh -CPU 20
 
-
+#svmu analyze the delta files
 for i in {01..20}
 do
 	svmu chr${i}.delta ../../${refgenome}/chr${i}.fasta ../$genome/chr${i}.fasta 100 h> chr${i}.small.txt
@@ -19,7 +20,7 @@ do
 	mv cords.txt chr${i}.cords.txt
 done
 
-
+#get CNVs from analysis results
 for i in {01..20}
 do
 	grep CNV chr${i}.sv.txt | awk '$(NF-2)>50' | awk '$NF!=0&&$(NF-1)!=0&&$NF!="inf"&&$(NF-1)!="inf"' | awk '$NF/$(NF-1)>=2||$(NF-1)/$NF>=2' > chr${i}.sv.CNV.xls
@@ -36,6 +37,7 @@ do
         done
 done
 
+#merge results of all chromosomes
 cat *sv.CNV.vcf >${genome}.CNV.vcf
 sort -k1,1 -k2,2n ${genome}.CNV.vcf -o ${genome}.CNV.vcf
 cp ${genome}.CNV.vcf ../../merge-alter/

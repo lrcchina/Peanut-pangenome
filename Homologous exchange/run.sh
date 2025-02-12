@@ -17,15 +17,13 @@ else
     rm -f $out_dir/DNAseq.path
   fi
 fi
-
+#get the variety names and data paths
 for i in $DNA_SEQ_dir/*
  do 
   if test -d $i
    then
     echo $i
     a=${i##*/}
-    # echo $a
-    #echo $a'ID'
      for j in $( find $i -name "*.gz"|sort)
      do
       echo $j
@@ -37,8 +35,6 @@ done
 
 echo 'start BSA analysis procession'
 
-#bwa index -a bwtsw shitouqi_genome.fasta
-
 while read id
 do
 sample=$(echo $id |cut -d" " -f 1 )
@@ -49,14 +45,14 @@ echo $file1
 echo $file2
 echo -e "start to analysis $sample"
 ref=/DATA-315TB/Genome/Peanut-A-B-genome/chr/A_B.fa
+#mapping resequencing data onto reference genome
 bwa mem -t 80 -r "@RG\tID:$sample\tLB:$sample\tSM:$sample\tPL:ILLUMINA" $ref $file1 $file2 -o ${sample}.sam
-
+#convert sam to bam
 samtools view -@ 80 -bS ${sample}.sam -o ${sample}.bam
-
+#sort bam files
 samtools sort -@ 80 ${sample}.bam -o out.${sample}.bam
-
+#index bam files
 samtools index -@ 80 out.${sample}.bam
-
 rm -f ${sample}.bam
 rm -f ${sample}.sam
 echo -e "$sample QC OK"

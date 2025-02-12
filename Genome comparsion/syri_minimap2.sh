@@ -4,6 +4,7 @@ genome=$1
 refgenome=$2
 for i in {01..20}
 do
+#comparision between chromosomes using minimap2
 echo "minimap2 -t 40 -ax asm5 --eqx ../../${refgenome}/chr${i}.fasta ../${genome}/chr${i}.fasta | samtools view -b > ${genome}_${refgenome}_chr${i}.bam"
 done > minimap2.sh
 ParaFly -c minimap2.sh -CPU 20
@@ -11,13 +12,16 @@ ParaFly -c minimap2.sh -CPU 20
 #
 for i in {01..20}
 do
+	#sort bam files
 	samtools sort -@ 20 ${genome}_${refgenome}_chr${i}.bam -o ${genome}_${refgenome}_chr${i}_sorted.bam
+	#create index
 	samtools index -@ 20 ${genome}_${refgenome}_chr${i}_sorted.bam
 	rm -f ${genome}_${refgenome}_chr${i}.bam
+	#get variations from bam files using syri
 	syri -c ${genome}_${refgenome}_chr${i}_sorted.bam -r ../../${refgenome}/chr${i}.fasta -q ../${genome}/chr${i}.fasta -k -F B --prefix ${genome}_${refgenome}_chr${i}
 done
 
-#INV
+#get invertions
 for i in {01..20}
 do
 	cat ${genome}_${refgenome}_chr${i}invOut.txt | grep '#' > ${genome}_${refgenome}_chr${i}_INV.xls
@@ -34,21 +38,21 @@ do
 	done
 done
 
-#DEL INS
+#get deletions and insertions
 for i in {01..20}
 do
 	cat ${genome}_${refgenome}_chr${i}syri.vcf|egrep 'INS|DEL'|awk 'length($4)-length($5)>50' > ${genome}_${refgenome}_chr${i}_syri_DEL.vcf
 	cat ${genome}_${refgenome}_chr${i}syri.vcf|egrep 'INS|DEL'|awk 'length($5)-length($4)>50' > ${genome}_${refgenome}_chr${i}_syri_INS.vcf
 done
 
-#SNP以及小于50bp的DEL和INS
+#get SNPs, as well as deletions and insertions with a length less than 50bp.
 for i in {01..20}
 do
 	cat ${genome}_${refgenome}_chr${i}syri.vcf|grep 'DEL'|awk 'length($4)-length($5)<=50' > ${genome}_${refgenome}_chr${i}_syri_SNP_DEL.vcf
 	cat ${genome}_${refgenome}_chr${i}syri.vcf|grep 'INS'|awk 'length($5)-length($4)<=50' > ${genome}_${refgenome}_chr${i}_syri_SNP_INS.vcf
 	cat ${genome}_${refgenome}_chr${i}syri.vcf|grep 'SNP'|awk 'length($5)-length($4)==0' > ${genome}_${refgenome}_chr${i}_syri_SNP.vcf
 done
-
+#merge SNPs of all chromosomes
 cat *syri_SNP*.vcf >${genome}.SNP.vcf
 grep -v "##" ${genome}.SNP.vcf >${genome}.SNP1.vcf
 rm -f ${genome}.SNP.vcf
@@ -57,7 +61,7 @@ sort -k1,1 -k2,2n ${genome}.SNP.vcf -o ${genome}.SNP.vcf
 cp -f ${genome}.SNP.vcf ../../merge-alter/
 
 
-#TRANS
+#get tranlocations
 for i in {01..20}
 do
 	python3 output_translocation_from_vcf.py ${genome}_${refgenome}_chr${i}syri.vcf > ${genome}_${refgenome}_chr${i}_TRANS.xls
@@ -74,12 +78,13 @@ do
 	done
 done
 
-
+#merge results of all chromosomes
 cat *syri_INV.vcf >${genome}.INV.vcf
 cat *syri_DEL.vcf >${genome}.DEL.vcf
 cat *syri_INS.vcf >${genome}.INS.vcf
 cat *syri_TRANS.vcf >${genome}.TRANS.vcf
 rm -f stats.txt
+#get the number of SVs
 wc -l ${genome}.DEL.vcf >>stats.txt
 wc -l ${genome}.INS.vcf >>stats.txt
 wc -l ${genome}.INV.vcf >>stats.txt
