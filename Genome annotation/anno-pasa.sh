@@ -11,7 +11,7 @@ DATABASE=$db
 validate_alignments_in_db.dbi:--MIN_PERCENT_ALIGNED=95
 validate_alignments_in_db.dbi:--MIN_AVG_PER_ID=98
 " > pasa.alignAssembly.config
-
+#use transcriptome data for gene structure prediction and transcript redundancy removal
 $PASAHOME/Launch_PASA_pipeline.pl \
           -c pasa.alignAssembly.config -C -R -g $ref \
           -t $transcript.clean -T -u $transcript \

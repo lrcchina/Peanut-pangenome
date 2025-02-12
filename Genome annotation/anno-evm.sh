@@ -6,7 +6,7 @@ REP_GFF3=REPEAT.gff3	# output of TEsorter
 SEQS=genome.fasta
 EVM_OUT=evm_working
 
-
+#integrate annotations from MAKER, PASA and TEsorter
 partition_EVM_inputs.pl --genome $SEQS --gene_predictions $PRED_GFF3 --transcript_alignments $TRANS_GFF3 \
     --protein_alignments $PRO_GFF3 --repeats $REP_GFF3 \
     --segmentSize 1000000 --overlapSize 100000 --partition_listing partitions_list.out
