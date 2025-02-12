@@ -4,4 +4,5 @@ for i in AS Dabaisha DL001 DL002 DL003 DL004 DL005 DL006 DL007 DL008 DL009 DL010
 do
 echo "/software/gatk-4.4.0.0/gatk --java-options \"-Xmx500m -Djava.io.tmpdir=./\"  HaplotypeCaller -R $ref -I ../bam/out.${i}_tag.bam -O gatk${i}_raw.vcf.gz -ERC GVCF"
 done > calling_HaplotypeCaller.sh
+#analyze in parallel using 80 threads
 ParaFly -c calling_HaplotypeCaller.sh -CPU 80

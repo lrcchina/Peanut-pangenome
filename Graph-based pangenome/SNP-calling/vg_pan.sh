@@ -18,15 +18,13 @@ else
     rm -f $out_dir/DNAseq.path
   fi
 fi
-
+#get the accession names and data paths
 for i in $DNA_SEQ_dir/*
  do 
   if test -d $i
    then
     echo $i
     a=${i##*/}
-    # echo $a
-    #echo $a'ID'
      for j in $( find $i -name "*.gz"|sort)
      do
       echo $j
@@ -37,8 +35,6 @@ for i in $DNA_SEQ_dir/*
 done
 
 echo 'start BSA analysis procession'
-#创建bwa基因组index
-#bwa index -a bwtsw shitouqi_genome.fasta
 
 while read id
 do
@@ -53,17 +49,13 @@ min=/mnt/NFS/analysis-results/Pan-Genome/result/tif_ref/peanut.min
 dist=/mnt/NFS/analysis-results/Pan-Genome/result/tif_ref/peanut.dist
 gbwt=/mnt/NFS/analysis-results/Pan-Genome/result/tif_ref/peanut.gbwt
 xg=/mnt/NFS/analysis-results/Pan-Genome/result/tif_ref/peanut.xg
-
+#generate bam files using vg giraffe
 vg giraffe -o bam -p -t 80 -b fast -m $min -d $dist --gbwt-name $gbwt -x $xg -N $sample -f $file1 -f $file2 >${sample}.bam
-
 samtools sort -@ 80 ${sample}.bam -o out.${sample}.bam
 samtools addreplacerg -@ 80 -r "@RG\tID:$sample\tSM:$sample\tLB:$sample" out.$sample.bam -o out.${sample}_tag.bam
-
 samtools index -@ 80 out.${sample}_tag.bam
-
 rm -f out.${sample}.bam
 rm -f ${sample}.bam
-
 echo -e "$sample QC OK"
 echo out.${sample}_tag.bam >> bam.list
 done<$out_dir/DNAseq.path

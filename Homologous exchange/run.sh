@@ -17,7 +17,7 @@ else
     rm -f $out_dir/DNAseq.path
   fi
 fi
-#get the variety names and data paths
+#get the accession names and data paths
 for i in $DNA_SEQ_dir/*
  do 
   if test -d $i
@@ -45,7 +45,7 @@ echo $file1
 echo $file2
 echo -e "start to analysis $sample"
 ref=/DATA-315TB/Genome/Peanut-A-B-genome/chr/A_B.fa
-#mapping resequencing data onto reference genome
+#mapping resequencing data onto the reference genome
 bwa mem -t 80 -r "@RG\tID:$sample\tLB:$sample\tSM:$sample\tPL:ILLUMINA" $ref $file1 $file2 -o ${sample}.sam
 #convert sam to bam
 samtools view -@ 80 -bS ${sample}.sam -o ${sample}.bam

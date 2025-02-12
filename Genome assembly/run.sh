@@ -7,7 +7,7 @@ hifiasm -o SA922contigs -t 40 D01.fasta.gz
 # get primary contigs in FASTA
 awk '/^S/{print ">"$2;print $3}' SA922contigs.asm.hic.p_ctg.gfa > SA922contigs.asm.p_ctg.fa
 mv SA922contigs.p_ctg.fa SA922contigs.fa
-#calcultae N50
+#calcultae N50 of contigs
 java -jar gnx.jar SA922contigs.fa >N50
 
 #####################Hi-C reads
@@ -53,7 +53,7 @@ bash /mnt/NFS/software/3d-dna/run-asm-pipeline-post-review.sh -r SA922contigs.3.
 tifref=/Tifrunner-V2/J5K5/arahy.Tifrunner.gnm2.J5K5.genome_main.fna
 #comparision between the assembly and Tifrunner
 nucmer --mum --mincluster 500 -t 20 $tifref SA922contigs.FINAL.fasta -p SA922_Tif
-#filter
+#filter results
 delta-filter -1 -i 90 -l 5000 SA922_Tif.delta > SA922_Tif.best.delta
 mummerplot -p SA922_Tif -f SA922_Tif.best.delta -t postscript
 #generate pdf

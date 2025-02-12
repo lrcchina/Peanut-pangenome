@@ -28,10 +28,13 @@ do
 	rm -f ${genome}_${refgenome}_chr${i}_syri_INV.vcf
 	cat ${genome}_${refgenome}_chr${i}_INV.xls | while read n
 	do
+		#get chromosome name of invertions
 		chr=`echo $n | awk '{print $2}'`
         pos=`echo $n | awk '{print $3}'`
+		#get chromosome names, start positions and end positions of invertions
         ref_pos=`echo $n | awk '{print $2":"$3"-"$4}'`
         alt_pos=`echo $n | awk '{print $6":"$7"-"$8}'`
+		#get sequences of invertions
 		ref_seq=`samtools faidx ../../${refgenome}/chr${i}.fasta $ref_pos | grep -v '>' | python3 tihuanhang.py -i stdin`
 		alt_seq=`samtools faidx ../${genome}/chr${i}.fasta $alt_pos | grep -v '>' | python3 tihuanhang.py -i stdin`
 		echo -e "${chr}\t${pos}\tINV\t${ref_seq}\t${alt_seq}\t30\tPASS\t.\tGT\t1/1" >> ${genome}_${refgenome}_chr${i}_syri_INV.vcf
@@ -68,10 +71,13 @@ do
 	rm -f ${genome}_${refgenome}_chr${i}_syri_TRANS.vcf
 	cat ${genome}_${refgenome}_chr${i}_TRANS.xls | while read n
 	do
+		#get chromosome name of invertions
 		chr=`echo $n | awk '{print $2}'`
 		pos=`echo $n | awk '{print $3}'`
+		#get chromosome names, start positions and end positions of invertions
 		ref_pos=`echo $n | awk '{print $2":"$3"-"$4}'`
 		alt_pos=`echo $n | awk '{print $6":"$7"-"$8}'`
+		#get sequences of invertions
 		ref_seq=`samtools faidx ../../${refgenome}/chr${i}.fasta $ref_pos | grep -v '>' | python3 tihuanhang.py -i stdin`
 		alt_seq=`samtools faidx ../${genome}/chr${i}.fasta $alt_pos | grep -v '>' | python3 tihuanhang.py -i stdin`
 		echo -e "${chr}\t${pos}\tTRANS\t${ref_seq}\t${alt_seq}\t30\tPASS\t.\tGT\t1/1" >> ${genome}_${refgenome}_chr${i}_syri_TRANS.vcf
