@@ -3,6 +3,7 @@ conda activate EDTA
 #create TE library
 perl /software/EDTA/EDTA.pl --sensitive 1 --anno 1 --genome /Genome/Ai/aisheng/genome_zrg/genome_V3/2.assembly/genome.fasta -t 60
 ##################
+#identify the repeated regions of the genome
 RepeatMasker -e ncbi -pa 60 -html -gff -dir repeat genome.fasta -lib genome.fasta.mod.EDTA.TElib.fa
 ##################PASA
 l1=/Genome/*/RNA-seq/flower_1.fq.gz
