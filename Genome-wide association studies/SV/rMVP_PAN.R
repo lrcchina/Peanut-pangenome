@@ -3,7 +3,8 @@ Args <- commandArgs(TRUE)
 setwd(Args[1])
 #MVP.Data.VCF2MVP("maf0.05.recode.vcf", out='mvp')
 genotype <- attach.big.matrix("/mapping_to_pan/过滤vcf/mvp.geno.desc")
-map <- read.table("/mapping_to_pan/过滤vcf/mvp.geno.map" , head = TRUE) 
+map <- read.table("/mapping_to_pan/过滤vcf/mvp.geno.map" , head = TRUE)
+#phenotype data
 phenotype <- read.table(Args[2],head=TRUE)
 
 

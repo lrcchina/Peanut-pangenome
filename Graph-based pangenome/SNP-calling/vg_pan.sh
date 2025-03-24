@@ -51,7 +51,9 @@ gbwt=/mnt/NFS/analysis-results/Pan-Genome/result/tif_ref/peanut.gbwt
 xg=/mnt/NFS/analysis-results/Pan-Genome/result/tif_ref/peanut.xg
 #generate bam files using vg giraffe
 vg giraffe -o bam -p -t 80 -b fast -m $min -d $dist --gbwt-name $gbwt -x $xg -N $sample -f $file1 -f $file2 >${sample}.bam
+#sort the bam files
 samtools sort -@ 80 ${sample}.bam -o out.${sample}.bam
+#add the sample tag to the header of the bam file
 samtools addreplacerg -@ 80 -r "@RG\tID:$sample\tSM:$sample\tLB:$sample" out.$sample.bam -o out.${sample}_tag.bam
 samtools index -@ 80 out.${sample}_tag.bam
 rm -f out.${sample}.bam
@@ -59,7 +61,5 @@ rm -f ${sample}.bam
 echo -e "$sample QC OK"
 echo out.${sample}_tag.bam >> bam.list
 done<$out_dir/DNAseq.path
-
-
 
 
